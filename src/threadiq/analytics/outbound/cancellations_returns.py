@@ -54,8 +54,8 @@ class CancellationReturnAnalytics(BaseAnalytics):
                 numerator=ret_items,
                 denominator=tot_items,
                 unit="%",
-                provenance="reconciled",
-                notes="Percentage of ordered apparel items returned or flagged with return reason.",
+                provenance="synthetic_proxy",
+                notes="Share of order items assigned a synthetic return-reason proxy from cancellation or low-review flags; not an observed physical return rate.",
             ),
         }
 
