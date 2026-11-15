@@ -171,6 +171,9 @@ def build_fct_order_items(
         "price": df["price"].astype(float),
         "freight_value": df["freight_value"].astype(float),
         "return_reason_code": assigned_reasons,
+        # The order-item transaction is sourced from Olist, but these reason labels
+        # are generated proxies inferred from cancellation / low-review flags.
+        "return_reason_source": ["synthetic_proxy" if reason is not None else None for reason in assigned_reasons],
         "data_source": "olist",
     })
     return fct.drop_duplicates(subset=["order_item_uid"])
