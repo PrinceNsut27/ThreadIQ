@@ -100,6 +100,7 @@ fct_order_items = Table(
     Column("price", Float, nullable=False),
     Column("freight_value", Float, nullable=False),
     Column("return_reason_code", String(64), index=True),
+    Column("return_reason_source", String(32)),
     Column("data_source", String(32), nullable=False),
 )
 
