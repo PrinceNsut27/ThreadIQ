@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
+from sqlalchemy import text
 
 from src.threadiq.data.loaders import (
     create_database_schema,
@@ -40,6 +41,41 @@ def test_database_schema_creation_and_loading(tmp_path: Path):
     result_df = query_to_df("SELECT * FROM dim_customers WHERE customer_id = 'c_test_01'", engine=engine)
     assert len(result_df) == 1
     assert result_df.iloc[0]["city"] == "Sao Paulo"
+
+
+
+def test_existing_sqlite_schema_gets_additive_return_source_migration(tmp_path: Path):
+    """Existing databases receive the new provenance column without being dropped."""
+    db_file = tmp_path / "legacy_threadiq.db"
+    engine = get_db_engine(f"sqlite:///{db_file.as_posix()}")
+
+    # Simulate a database created before return_reason_source was introduced.
+    with engine.begin() as conn:
+        conn.execute(text(
+            "CREATE TABLE fct_order_items ("
+            "order_item_uid VARCHAR(128) PRIMARY KEY, "
+            "return_reason_code VARCHAR(64), "
+            "data_source VARCHAR(32) NOT NULL)"
+        ))
+        conn.execute(text(
+            "INSERT INTO fct_order_items "
+            "(order_item_uid, return_reason_code, data_source) "
+            "VALUES ('legacy_1', NULL, 'olist')"
+        ))
+
+    create_database_schema(engine)
+
+    with engine.connect() as conn:
+        columns = {
+            row[1]
+            for row in conn.execute(text("PRAGMA table_info(fct_order_items)"))
+        }
+        existing_row = conn.execute(text(
+            "SELECT order_item_uid FROM fct_order_items WHERE order_item_uid='legacy_1'"
+        )).scalar_one()
+
+    assert "return_reason_source" in columns
+    assert existing_row == "legacy_1"
 
 
 def test_full_pipeline_mock_execution(tmp_path: Path):
