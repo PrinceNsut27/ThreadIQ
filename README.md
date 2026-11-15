@@ -5,7 +5,7 @@
 [![Python 3.13](https://img.shields.io/badge/Python-3.13-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Database](https://img.shields.io/badge/Database-SQLite%20%7C%20SQLAlchemy-003B57.svg?style=flat)](https://www.sqlalchemy.org/)
 [![Dashboard](https://img.shields.io/badge/Dashboard-Streamlit%201.45-FF4B4B.svg?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![Tests](https://img.shields.io/badge/Tests-54%20Passed-059669.svg?style=flat)](file:///tests)
+[![Test report](https://img.shields.io/badge/Test%20report-available-blue.svg)](docs/quality/testing_report.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gray.svg?style=flat)](LICENSE)
 
 ---
@@ -148,7 +148,9 @@ ThreadIQ maintains strict data provenance labels across all records and calculat
 
 ## 7. Key Analytical Findings & Product Insights
 
-From the implemented analytics running against the populated database:
+ > **Interpretation note:** The figures below describe the repository's current demo database and generated records. They are implementation examples, not representative fashion-industry benchmarks or evidence about Myntra. Clickstream, inventory, promotion and return-reason outputs are synthetic; Olist transaction fields are observed public data. Check each metric's provenance and denominator before using it in a product decision.
+
+From the implemented analytics running against the populated demo database:
 
 1. **Cart & Checkout Drop-off**: 93.25% of shopping sessions with an item added to cart fail to convert, with an 89.02% drop-off between checkout initiation and payment completion.
 2. **Search Vocabulary Mismatch**: 85.96% of customer search queries return zero catalog results due to exact-string matching constraints on colloquial fashion terminology (e.g. "sneakers", "kimono").
@@ -215,7 +217,7 @@ threadiq/
 │   ├── test_synthetic_data.py                # Behavioral simulation checks (7 tests)
 │   └── test_validation.py                    # Quality gates & referential integrity (6 tests)
 ├── app.py                                    # Main Streamlit web application entrypoint
-├── requirements.txt                          # Pinned project dependencies
+├── requirements.txt                          # Minimum dependency versions
 ├── sofar.md                                  # Cumulative progress tracking ledger
 └── README.md                                 # Project documentation
 ```
@@ -223,6 +225,8 @@ threadiq/
 ---
 
 ## 10. Installation and Setup
+
+> **Dataset setup:** The `--mock-if-missing` option creates a small demo dataset for local exploration. For analysis using the public source datasets, download them using `python scripts/acquire_datasets.py` and follow the expected folder/file layout before running the pipeline without mock mode.
 
 ### Prerequisites
 - Python 3.11, 3.12, or 3.13
@@ -293,7 +297,7 @@ pytest tests/ -v
 ```
 
 ### Test Coverage Summary:
-- **54 total test cases across 8 test suites** pass with 100% success.
+- The repository testing report documents **54 test cases across 8 test suites**. Re-run `pytest tests/ -v` in your environment to verify the current checkout; the README does not treat a historical report as a live CI result.
 - Includes unit tests for all 14 analytics classes, ingestion encoding fallbacks, data cleaning quarantine rules, database relational integrity, statistical power calculations, z-tests, Welch's t-tests, RICE scoring, and native headless Streamlit `AppTest` execution across all 7 dashboard pages with 0 unhandled exceptions.
 
 ---
@@ -317,4 +321,4 @@ pytest tests/ -v
 
 ## 15. Project Information
 
-**ThreadIQ** is an independent educational and portfolio project developed by **PrinceNsut27**. It is not affiliated with Myntra and does not use Myntra's internal datasets or systems. All public datasets are used under their respective open-access licences.
+**ThreadIQ** is an independent educational and portfolio project developed by **PrinceNsut27**. It is not affiliated with Myntra and does not use Myntra's internal datasets or systems. Public dataset use is subject to each dataset publisher's licence and terms. See the data provenance section before redistributing source data.
