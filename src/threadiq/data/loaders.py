@@ -279,6 +279,28 @@ def create_database_schema(engine: Engine | None = None, drop_existing: bool = F
             conn.execute(text("PRAGMA foreign_keys = ON;"))
         logger.info("Existing database schema dropped.")
     metadata.create_all(eng)
+
+    # Lightweight additive migrations for existing SQLite deployments.
+    # SQLAlchemy create_all() creates missing tables but does not add columns
+    # to tables that already exist. Keep this migration non-destructive.
+    if eng.dialect.name == "sqlite":
+        with eng.begin() as conn:
+            order_item_columns = {
+                row[1]
+                for row in conn.execute(text("PRAGMA table_info(fct_order_items)")).fetchall()
+            }
+            if order_item_columns and "return_reason_source" not in order_item_columns:
+                conn.execute(
+                    text(
+                        "ALTER TABLE fct_order_items "
+                        "ADD COLUMN return_reason_source VARCHAR(32)"
+                    )
+                )
+                logger.info(
+                    "Applied additive migration: "
+                    "fct_order_items.return_reason_source"
+                )
+
     logger.info("Database schema initialized successfully.")
 
 
