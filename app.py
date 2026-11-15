@@ -23,7 +23,10 @@ from src.threadiq.dashboard.pages import (
     page_07_insights,
 )
 from src.threadiq.dashboard.theme import apply_custom_css
-from src.threadiq.data.loaders import get_db_engine
+from sqlalchemy import inspect, text
+
+from src.threadiq.data.loaders import create_database_schema, get_db_engine
+from src.threadiq.data.pipeline import run_pipeline
 
 
 # Streamlit Page Configuration
@@ -40,8 +43,33 @@ apply_custom_css()
 
 @st.cache_resource
 def load_database():
-    """Obtain cached database engine connection."""
-    return get_db_engine()
+    """Obtain a ready-to-query database, bootstrapping demo data on fresh deployments."""
+    engine = get_db_engine()
+    create_database_schema(engine)
+
+    required_tables = {"fct_orders", "fct_order_payments", "dim_customers"}
+    existing_tables = set(inspect(engine).get_table_names())
+
+    # SQLite files are excluded from Git, so a fresh Streamlit deployment
+    # needs to initialize its database before the dashboard executes queries.
+    if not required_tables.issubset(existing_tables):
+        st.info("First-time setup: building the ThreadIQ demo database. This may take a moment.")
+        run_pipeline(database_url=str(engine.url), mock_if_missing=True)
+    else:
+        with engine.connect() as conn:
+            order_count = conn.execute(text("SELECT COUNT(*) FROM fct_orders")).scalar_one()
+        if order_count == 0:
+            st.info("Initializing the empty ThreadIQ demo database.")
+            run_pipeline(database_url=str(engine.url), mock_if_missing=True)
+
+    final_tables = set(inspect(engine).get_table_names())
+    missing = sorted(required_tables - final_tables)
+    if missing:
+        raise RuntimeError(
+            "ThreadIQ database initialization did not create required tables: "
+            + ", ".join(missing)
+        )
+    return engine
 
 
 def main():
