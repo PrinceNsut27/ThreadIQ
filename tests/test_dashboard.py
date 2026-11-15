@@ -75,8 +75,9 @@ def test_apptest_all_seven_pages():
         "Strategic Insights & PRDs",
     ]
 
+    app_path = Path(__file__).resolve().parents[1] / "app.py"
     for p in pages:
-        at = AppTest.from_file("app.py", default_timeout=30)
+        at = AppTest.from_file(str(app_path), default_timeout=30)
         at.run()
         # Switch to the requested radio page
         at.radio[0].set_value(p).run()
