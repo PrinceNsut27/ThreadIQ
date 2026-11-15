@@ -6,7 +6,6 @@
 [![Database](https://img.shields.io/badge/Database-SQLite%20%7C%20SQLAlchemy-003B57.svg?style=flat)](https://www.sqlalchemy.org/)
 [![Dashboard](https://img.shields.io/badge/Dashboard-Streamlit%201.45-FF4B4B.svg?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![Test report](https://img.shields.io/badge/Test%20report-available-blue.svg)](docs/quality/testing_report.md)
-[![License: MIT](https://img.shields.io/badge/License-MIT-gray.svg?style=flat)](LICENSE)
 
 ---
 
@@ -25,9 +24,9 @@ ThreadIQ was engineered to solve these interconnected challenges. It ingests tra
 Modern e-commerce operators frequently make product decisions using siloed, fragmented metrics. Storefront teams optimize for clicks without visibility into post-purchase return rates; inventory managers reorder based on static thresholds without real-time promotional demand signals; and logistics teams treat carrier delays in isolation from customer order cancellations.
 
 ThreadIQ addresses three specific operational bottlenecks:
-1. **Storefront Conversion Leakage**: High cart abandonment (93.3%) and final checkout drop-off (89.0%), compounded by an 86.0% zero-result search rate when shoppers query natural fashion terminology.
+1. **Storefront Conversion Leakage**: The generated demo clickstream shows cart and checkout drop-off; search zero-result figures are specific to the synthetic query mix and should not be interpreted as real shopper behaviour.
 2. **Inbound Sourcing & Inventory Imbalance**: High-velocity core listings operating at critical stockout risk (Days of Cover under 5 days) alongside stagnant listings exceeding 60 Days of Cover, while promotional campaigns rely heavily on margin-diluting flash sales.
-3. **Outbound Logistics & Reverse Supply Chain Overhead**: Extended carrier transit times accounting for 75.2% of total order fulfillment latency, contributing to a 69.7% On-Time Delivery Rate (OTD%) and an elevated 23.2% apparel return rate heavily driven by sizing and fit mismatches (38.5% of returns).
+3. **Outbound Logistics & Reverse Supply Chain Overhead**: The demo dataset supports analysis of merchant dispatch, carrier transit and delivery status. Structured apparel return reasons are synthetic proxies, not observed return events.
 
 ---
 
@@ -153,10 +152,10 @@ ThreadIQ maintains strict data provenance labels across all records and calculat
 From the implemented analytics running against the populated demo database:
 
 1. **Cart & Checkout Drop-off**: 93.25% of shopping sessions with an item added to cart fail to convert, with an 89.02% drop-off between checkout initiation and payment completion.
-2. **Search Vocabulary Mismatch**: 85.96% of customer search queries return zero catalog results due to exact-string matching constraints on colloquial fashion terminology (e.g. "sneakers", "kimono").
+2. **Search Vocabulary Mismatch**: The generated demo database contains a synthetic search-query mix with zero-result queries. Its observed rate is a property of the generator configuration and should not be generalized to a real storefront.
 3. **Inventory Days of Cover Skew**: Hero SKU 1101 operates at 4.2 Days of Cover, requiring an urgent reorder of 340 units, while tail listings exceed 60 Days of Cover.
 4. **Logistics Bottleneck in Carrier Transit**: Carrier transit accounts for 75.15% of total order fulfillment lead time (171.2 hours vs. 56.7 hours for merchant dispatch), leading to an On-Time Delivery Rate of 69.70%.
-5. **Reverse Logistics Driven by Size & Fit**: Apparel item return rate is 23.21%, with Size & Fit accounting for 38.46% of all returns and Activewear reaching a 60.00% category return rate.
+5. **Reverse Logistics Proxy**: Synthetic return-reason labels allow the dashboard to demonstrate return decomposition. They do not establish actual apparel return rates, size-fit causality or category return benchmarks.
 
 ---
 
