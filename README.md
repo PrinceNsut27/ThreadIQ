@@ -5,8 +5,7 @@
 [![Python 3.13](https://img.shields.io/badge/Python-3.13-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Database](https://img.shields.io/badge/Database-SQLite%20%7C%20SQLAlchemy-003B57.svg?style=flat)](https://www.sqlalchemy.org/)
 [![Dashboard](https://img.shields.io/badge/Dashboard-Streamlit%201.45-FF4B4B.svg?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![Tests](https://img.shields.io/badge/Tests-54%20Passed-059669.svg?style=flat)](file:///tests)
-[![License: MIT](https://img.shields.io/badge/License-MIT-gray.svg?style=flat)](LICENSE)
+[![Test report](https://img.shields.io/badge/Test%20report-available-blue.svg)](docs/quality/testing_report.md)
 
 ---
 
@@ -25,9 +24,9 @@ ThreadIQ was engineered to solve these interconnected challenges. It ingests tra
 Modern e-commerce operators frequently make product decisions using siloed, fragmented metrics. Storefront teams optimize for clicks without visibility into post-purchase return rates; inventory managers reorder based on static thresholds without real-time promotional demand signals; and logistics teams treat carrier delays in isolation from customer order cancellations.
 
 ThreadIQ addresses three specific operational bottlenecks:
-1. **Storefront Conversion Leakage**: High cart abandonment (93.3%) and final checkout drop-off (89.0%), compounded by an 86.0% zero-result search rate when shoppers query natural fashion terminology.
+1. **Storefront Conversion Leakage**: The generated demo clickstream shows cart and checkout drop-off; search zero-result figures are specific to the synthetic query mix and should not be interpreted as real shopper behaviour.
 2. **Inbound Sourcing & Inventory Imbalance**: High-velocity core listings operating at critical stockout risk (Days of Cover under 5 days) alongside stagnant listings exceeding 60 Days of Cover, while promotional campaigns rely heavily on margin-diluting flash sales.
-3. **Outbound Logistics & Reverse Supply Chain Overhead**: Extended carrier transit times accounting for 75.2% of total order fulfillment latency, contributing to a 69.7% On-Time Delivery Rate (OTD%) and an elevated 23.2% apparel return rate heavily driven by sizing and fit mismatches (38.5% of returns).
+3. **Outbound Logistics & Reverse Supply Chain Overhead**: The demo dataset supports analysis of merchant dispatch, carrier transit and delivery status. Structured apparel return reasons are synthetic proxies, not observed return events.
 
 ---
 
@@ -148,13 +147,15 @@ ThreadIQ maintains strict data provenance labels across all records and calculat
 
 ## 7. Key Analytical Findings & Product Insights
 
-From the implemented analytics running against the populated database:
+ > **Interpretation note:** The figures below describe the repository's current demo database and generated records. They are implementation examples, not representative fashion-industry benchmarks or evidence about Myntra. Clickstream, inventory, promotion and return-reason outputs are synthetic; Olist transaction fields are observed public data. Check each metric's provenance and denominator before using it in a product decision.
+
+From the implemented analytics running against the populated demo database:
 
 1. **Cart & Checkout Drop-off**: 93.25% of shopping sessions with an item added to cart fail to convert, with an 89.02% drop-off between checkout initiation and payment completion.
-2. **Search Vocabulary Mismatch**: 85.96% of customer search queries return zero catalog results due to exact-string matching constraints on colloquial fashion terminology (e.g. "sneakers", "kimono").
+2. **Search Vocabulary Mismatch**: The generated demo database contains a synthetic search-query mix with zero-result queries. Its observed rate is a property of the generator configuration and should not be generalized to a real storefront.
 3. **Inventory Days of Cover Skew**: Hero SKU 1101 operates at 4.2 Days of Cover, requiring an urgent reorder of 340 units, while tail listings exceed 60 Days of Cover.
 4. **Logistics Bottleneck in Carrier Transit**: Carrier transit accounts for 75.15% of total order fulfillment lead time (171.2 hours vs. 56.7 hours for merchant dispatch), leading to an On-Time Delivery Rate of 69.70%.
-5. **Reverse Logistics Driven by Size & Fit**: Apparel item return rate is 23.21%, with Size & Fit accounting for 38.46% of all returns and Activewear reaching a 60.00% category return rate.
+5. **Reverse Logistics Proxy**: Synthetic return-reason labels allow the dashboard to demonstrate return decomposition. They do not establish actual apparel return rates, size-fit causality or category return benchmarks.
 
 ---
 
@@ -215,7 +216,7 @@ threadiq/
 │   ├── test_synthetic_data.py                # Behavioral simulation checks (7 tests)
 │   └── test_validation.py                    # Quality gates & referential integrity (6 tests)
 ├── app.py                                    # Main Streamlit web application entrypoint
-├── requirements.txt                          # Pinned project dependencies
+├── requirements.txt                          # Minimum dependency versions
 ├── sofar.md                                  # Cumulative progress tracking ledger
 └── README.md                                 # Project documentation
 ```
@@ -223,6 +224,8 @@ threadiq/
 ---
 
 ## 10. Installation and Setup
+
+> **Dataset setup:** The `--mock-if-missing` option creates a small demo dataset for local exploration. For analysis using the public source datasets, download them using `python scripts/acquire_datasets.py` and follow the expected folder/file layout before running the pipeline without mock mode.
 
 ### Prerequisites
 - Python 3.11, 3.12, or 3.13
@@ -293,7 +296,7 @@ pytest tests/ -v
 ```
 
 ### Test Coverage Summary:
-- **54 total test cases across 8 test suites** pass with 100% success.
+- The repository testing report documents **54 test cases across 8 test suites**. Re-run `pytest tests/ -v` in your environment to verify the current checkout; the README does not treat a historical report as a live CI result.
 - Includes unit tests for all 14 analytics classes, ingestion encoding fallbacks, data cleaning quarantine rules, database relational integrity, statistical power calculations, z-tests, Welch's t-tests, RICE scoring, and native headless Streamlit `AppTest` execution across all 7 dashboard pages with 0 unhandled exceptions.
 
 ---
@@ -317,4 +320,4 @@ pytest tests/ -v
 
 ## 15. Project Information
 
-**ThreadIQ** is an independent educational and portfolio project developed by **PrinceNsut27**. It is not affiliated with Myntra and does not use Myntra's internal datasets or systems. All public datasets are used under their respective open-access licences.
+**ThreadIQ** is an independent educational and portfolio project developed by **PrinceNsut27**. It is not affiliated with Myntra and does not use Myntra's internal datasets or systems. Public dataset use is subject to each dataset publisher's licence and terms. See the data provenance section before redistributing source data.

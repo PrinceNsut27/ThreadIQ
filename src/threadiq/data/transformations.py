@@ -133,15 +133,9 @@ def build_fct_order_items(
     reviews_df: pd.DataFrame | None = None,
     seed: int = RANDOM_SEED,
 ) -> pd.DataFrame:
-    """Build fct_order_items with fashion return reasons mapped to canceled/low-rated items."""
+    """Build order items with explicitly synthetic reason proxies for low-rated orders only."""
     rng = np.random.default_rng(seed)
     df = cleaned_items.copy()
-
-    # Identify canceled orders
-    canceled_orders = set()
-    if orders_df is not None and not orders_df.empty:
-        status_col = "order_status"
-        canceled_orders = set(orders_df[orders_df[status_col] == "canceled"]["order_id"].unique())
 
     # Identify low review orders (score <= 2)
     low_review_orders = set()
@@ -154,7 +148,9 @@ def build_fct_order_items(
     assigned_reasons = []
     for _, row in df.iterrows():
         oid = row["order_id"]
-        if oid in canceled_orders or oid in low_review_orders:
+        # A cancellation is not a return. Low-review flags are only a weak proxy,
+        # so generated reason codes are kept explicitly synthetic.
+        if oid in low_review_orders:
             reason = rng.choice(return_reasons, p=return_weights)
         else:
             reason = None
@@ -171,6 +167,9 @@ def build_fct_order_items(
         "price": df["price"].astype(float),
         "freight_value": df["freight_value"].astype(float),
         "return_reason_code": assigned_reasons,
+        # The order-item transaction is sourced from Olist, but these reason labels
+        # are generated proxies inferred from cancellation / low-review flags.
+        "return_reason_source": ["synthetic_proxy" if reason is not None else None for reason in assigned_reasons],
         "data_source": "olist",
     })
     return fct.drop_duplicates(subset=["order_item_uid"])

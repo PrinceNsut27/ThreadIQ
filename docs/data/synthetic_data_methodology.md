@@ -32,7 +32,7 @@ stateDiagram-v2
     CategoryView --> ProductDetailView
     SearchQuery --> SearchResults
     SearchResults --> ProductDetailView
-    SearchResults --> ZeroResultExit : No items found (10%)
+    SearchResults --> ZeroResultExit : No items found (10% of generated non-converting sessions by archetype weight)
     ProductDetailView --> AddToWishlist
     ProductDetailView --> AddToCart
     ProductDetailView --> BounceExit : Leave (30%)

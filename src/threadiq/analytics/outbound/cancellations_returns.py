@@ -11,7 +11,7 @@ class CancellationReturnAnalytics(BaseAnalytics):
     """Analyzes cancellation rates, fashion return root-causes, and payment refund exposures."""
 
     def get_cancellation_and_return_rates(self) -> dict[str, MetricResult]:
-        """Compute platform-level Order Cancellation Rate and Item Return Rate."""
+        """Compute observed cancellation rate and synthetic return-proxy assignment rate."""
         # 1. Cancellation rate
         sql_cancels = """
         SELECT
@@ -48,19 +48,19 @@ class CancellationReturnAnalytics(BaseAnalytics):
                 notes="Percentage of placed orders that were canceled prior to fulfillment.",
             ),
             "item_return_rate": MetricResult(
-                name="Item Return Rate",
+                name="Synthetic Return-Proxy Assignment Rate",
                 value=return_rate,
                 formatted_value=f"{return_rate:.1f}%",
                 numerator=ret_items,
                 denominator=tot_items,
                 unit="%",
-                provenance="reconciled",
-                notes="Percentage of ordered apparel items returned or flagged with return reason.",
+                provenance="synthetic_proxy",
+                notes="Share of order items assigned a synthetic reason proxy from low-review flags only; cancellations are excluded and this is not an observed physical return rate.",
             ),
         }
 
     def get_return_reasons_breakdown(self) -> pd.DataFrame:
-        """Deconstruct return volume across fashion categories by return driver (Size/Fit, Quality, etc.)."""
+        """Break down synthetic return-reason proxy assignments by fashion category."""
         sql = """
         SELECT
             return_reason_code as return_reason,
@@ -82,7 +82,7 @@ class CancellationReturnAnalytics(BaseAnalytics):
         return df
 
     def get_category_return_patterns(self) -> pd.DataFrame:
-        """Analyze return rates segmented across garment categories."""
+        """Analyze synthetic return-proxy assignment rates across garment categories."""
         sql = """
         SELECT
             p.sub_category,
