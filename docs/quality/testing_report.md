@@ -4,10 +4,10 @@
 
 This report documents the testing strategy, test suites, execution telemetry, and verification results for **ThreadIQ**. All tests were executed in Python 3.13 against the live SQLite relational database (`data/threadiq.db`).
 
-- **Total Test Cases Executed**: **54 tests**
-- **Passed**: **54 (100%)**
+- **Total Test Cases Executed**: **55 tests**
+- **Passed**: **55 (100%)**
 - **Failed**: **0 (0%)**
-- **Execution Duration**: **20.32 seconds**
+- **Execution Duration**: **35.75 seconds**
 
 ---
 
@@ -20,7 +20,7 @@ This report documents the testing strategy, test suites, execution telemetry, an
 | `tests/test_experimentation.py` | Sample size calculations for proportions and continuous metrics, MDE solver, two-proportion z-tests (statistically significant and non-significant cases), Welch's independent t-tests, Sample Ratio Mismatch (SRM) Chi-square detection, RICE formula scoring, ranking, tiering, and simulation cohort generation. | 12 | **PASSED** |
 | `tests/test_cleaning.py` | Deduplication by latest timestamp, price non-negative enforcement, freight non-negative enforcement, and quarantine logging. | 3 | **PASSED** |
 | `tests/test_ingestion.py` | Multi-encoding CSV reading (UTF-8, Latin-1, CP1252), missing column detection, and error logging. | 5 | **PASSED** |
-| `tests/test_loaders_and_pipeline.py`| SQLite relational database schema creation, table dropping/recreation, and foreign key constraint integrity. | 2 | **PASSED** |
+| `tests/test_loaders_and_pipeline.py`| SQLite relational database schema creation, table dropping/recreation, additive migrations for return provenance, and foreign key constraint integrity. | 3 | **PASSED** |
 | `tests/test_synthetic_data.py` | Stochastic clickstream generation, prerequisite session rules, monotonic microsecond timestamps, inventory demand archetypes, warehouse tracking, and promotional discount bounds. | 7 | **PASSED** |
 | `tests/test_validation.py` | 7-point quality gates, referential integrity verification, and quarantine redirection. | 6 | **PASSED** |
 

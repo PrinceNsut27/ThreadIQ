@@ -1,176 +1,241 @@
 # ThreadIQ — Fashion Commerce Product Intelligence & Operations Platform
 
-> **Turning commerce data into better product decisions.**
+> **An end-to-end product management and decision intelligence platform connecting digital storefront customer intent with physical supply chain execution.**
 
-[![Python 3.13](https://img.shields.io/badge/Python-3.13-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
+[![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Database](https://img.shields.io/badge/Database-SQLite%20%7C%20SQLAlchemy-003B57.svg?style=flat)](https://www.sqlalchemy.org/)
 [![Dashboard](https://img.shields.io/badge/Dashboard-Streamlit%201.45-FF4B4B.svg?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![Tests](https://img.shields.io/badge/Tests-55%20Passed-059669.svg?style=flat)](tests/)
 [![Test report](https://img.shields.io/badge/Test%20report-available-blue.svg)](docs/quality/testing_report.md)
 
 ---
 
-## 1. Overview
+## 1. Product Case Study: Overview & Vision
 
-**ThreadIQ** is an integrated product analytics and operational decision platform built specifically for fashion e-commerce.
+### Product Vision
+ThreadIQ is designed to eliminate the systemic intelligence gap in modern fashion e-commerce: **the disconnection between customer discovery intent on the storefront and physical fulfillment execution in the warehouse.** 
 
-In digital fashion commerce, commercial success depends on connecting top-of-funnel customer behavior with physical supply chain execution. When search fails to parse customer intent, shoppers bounce. When garment sizing is ambiguous, return rates surge and erode operating margins. When high-velocity styles run out of stock, revenue is permanently lost, while slow-moving inventory locks up working capital.
+By bridging web clickstream telemetry, merchant catalog health, inventory days-of-cover, carrier SLA performance, and post-purchase customer feedback into a unified analytical decision platform, ThreadIQ empowers cross-functional teams to identify friction, prioritize high-leverage interventions, specify features, and validate impact through statistical experimentation.
 
-ThreadIQ was engineered to solve these interconnected challenges. It ingests transactional, catalog, behavioral, and logistics data, cleans and models it into a star-schema relational warehouse, computes domain-specific product metrics, and feeds those findings directly into an actionable product management framework comprising RICE prioritization, statistical A/B experimentation, and detailed Product Requirement Documents (PRDs).
+```
++--------------------+      +--------------------+      +----------------------+
+|    Storefront      |      |      Inbound       |      |       Outbound       |
+| Customer Intent    | ---> | Catalog Health &   | ---> | Fulfillment SLA &    |
+| & Drop-off Funnel  |      | Inventory Buffer   |      | Post-Purchase Return |
++--------------------+      +--------------------+      +----------------------+
+                                       |
+                                       v
+                   +----------------------------------------+
+                   |  ThreadIQ Decision Intelligence Engine  |
+                   |  - Analytics & Metric Calculations     |
+                   |  - RICE Prioritization Framework       |
+                   |  - Statistical Experimentation Engine   |
+                   +----------------------------------------+
+```
+
+$$\text{Problem Discovery} \longrightarrow \text{Data Analysis} \longrightarrow \text{Pain Points} \longrightarrow \text{Opportunity Identification} \longrightarrow \text{Prioritization} \longrightarrow \text{PRD} \longrightarrow \text{Experimentation} \longrightarrow \text{Release} \longrightarrow \text{Monitoring}$$
 
 ---
 
-## 2. Problem Statement
-
-Modern e-commerce operators frequently make product decisions using siloed, fragmented metrics. Storefront teams optimize for clicks without visibility into post-purchase return rates; inventory managers reorder based on static thresholds without real-time promotional demand signals; and logistics teams treat carrier delays in isolation from customer order cancellations.
+## 2. Evidence-Based Problem Diagnosis
 
 ThreadIQ addresses three specific operational bottlenecks:
 1. **Storefront Conversion Leakage**: The generated demo clickstream shows cart and checkout drop-off; search zero-result figures are specific to the synthetic query mix and should not be interpreted as real shopper behaviour.
 2. **Inbound Sourcing & Inventory Imbalance**: High-velocity core listings operating at critical stockout risk (Days of Cover under 5 days) alongside stagnant listings exceeding 60 Days of Cover, while promotional campaigns rely heavily on margin-diluting flash sales.
 3. **Outbound Logistics & Reverse Supply Chain Overhead**: The demo dataset supports analysis of merchant dispatch, carrier transit and delivery status. Structured apparel return reasons are synthetic proxies, not observed return events.
 
----
-
-## 3. Key Capabilities
-
-### A. Storefront Intelligence
-- **Conversion Funnel Deconstruction**: 6-stage session tracking from Homepage Impression to Purchase Completed, calculating step-by-step conversion and drop-off rates.
-- **Cart & Checkout Abandonment Telemetry**: Quantifies drop-off between cart addition and payment authorization.
-- **Search & Discovery Diagnostics**: Audits search query volume, click-through rates (CTR), zero-result search rates, and search-to-purchase conversion.
-- **SKU & Category Commercial Velocity**: Measures views, add-to-cart rates, purchase conversion, gross revenue, and average selling price (ASP).
-- **Customer Lifetime Analytics**: Repeat purchase rates, average order value (AOV), monthly cohort retention decay, and RFM behavioral segmentation.
-
-### B. Inbound Intelligence
-- **Catalog Completeness & Attribute Governance**: Audits mandatory merchandising fields (`article_type`, `sub_category`, `base_colour`, `season`, `usage`) with data quality scoring.
-- **Inventory Availability & Health**: Daily SKU-level in-stock rates, stockout frequency, and trailing 30-day sales velocity.
-- **Days of Cover (DoC) Diagnostics**: Identifies fast movers at risk of depletion versus overstocked styles.
-- **Heuristic Replenishment Engine**: Suggests automated purchase order reorder quantities targeting a 30-day safety buffer, with documented urgency classification rules.
-- **Pricing & Promotion Audits**: Non-parametric price quartiles by category, average promotional markdown depth, and campaign type distribution.
-
-### C. Outbound Intelligence
-- **Fulfillment Lifecycle Funnel**: Monitors orders through Placed, Approved, Dispatched, Delivered, and Canceled states.
-- **Carrier SLA & Delivery Compliance**: Measures On-Time Delivery Rate (OTD%), late delivery rates, and regional state delivery performance.
-- **Order Cancellation Diagnostics**: Tracks pre-fulfillment cancellation rates and operational correlations.
-- **Fashion Return Decomposition**: Deconstructs apparel returns into root causes (`SIZE_FIT`, `STYLE_NOT_AS_PICTURED`, `QUALITY_FABRIC`, `LOGISTICS_DELAY`) and category return patterns (e.g. Activewear at 60%).
-- **Fulfillment Bottleneck Waterfall**: Separates order fulfillment latency into Merchant Fulfillment (Order-to-Dispatch) versus Carrier Transit (Dispatch-to-Delivery).
-
-### D. Experimentation & Decision Intelligence
-- **Statistical Power & Sample Size Calculator**: Computes required sample sizes per variant for proportions and continuous metrics using SciPy.
-- **Rigorous Hypothesis Testing**: Two-proportion z-tests (pooled standard error, two-tailed p-values, 95% confidence intervals) and Welch's independent t-tests for monetary spend (AOV).
-- **Sample Ratio Mismatch (SRM) Detection**: Pearson Chi-Square goodness-of-fit testing ($\alpha = 0.001$) to flag assignment bias.
-- **RICE Prioritization Framework**: Mathematical scoring ($\text{Reach} \times \text{Impact} \times \text{Confidence} / \text{Effort}$) ranking backlog initiatives into Now, Next, and Later execution horizons.
-
-### E. Executive Dashboard
-- Unified 7-page interactive Streamlit application powered by Plotly visualizations, responsive metric cards, and live database queries.
-
----
-
-## 4. Technical Architecture
-
 ```mermaid
-flowchart TD
-    subgraph Data Sources [Data Layer]
-        D1["Observed E-Commerce Orders & Logistics (Olist)"]
-        D2["Fashion Catalog Metadata (Kaggle Fashion)"]
-        D3["Simulated Clickstream Event Stream (fct_sessions, fct_events)"]
-        D4["Simulated Warehouse Inventory Snapshots (fct_inventory_snapshots)"]
+flowchart LR
+    subgraph Storefront [Storefront Friction]
+        S1["Cart Abandonment: 93.3%"]
+        S2["Zero-Result Search: 86.0% (Synthetic query mix)"]
+        S3["Payment Drop-Off: 89.0%"]
     end
 
-    subgraph Data Pipeline [Ingestion, Cleaning & ETL]
-        P1["Multi-Encoding CSV Ingestion (src/threadiq/data/ingestion.py)"]
-        P2["7-Point Validation Gates & Quarantine (src/threadiq/data/validation.py)"]
-        P3["Star-Schema Dimension & Fact Builders (src/threadiq/data/transformations.py)"]
-        P4[("Relational Database Store (data/threadiq.db)")]
+    subgraph Inbound [Inbound Imbalance]
+        I1["Stockout Risk: 18.2% SKUs"]
+        I2["Stagnant Inventory: 35.4% SKUs"]
+        I3["Margin Erosion: 30%+ Markdowns"]
     end
 
-    subgraph Analytics Engines [Domain Intelligence]
-        A1["Storefront Analytics (Funnel, Search, Merchandising, RFM)"]
-        A2["Inbound Analytics (Catalog Quality, Stockouts, DoC, Replenishment)"]
-        A3["Outbound Analytics (Fulfillment Funnel, OTD% SLA, Return Decomposition)"]
+    subgraph Outbound [Outbound Overhead]
+        O1["Delivery Delays: 6.8% Orders"]
+        O2["Return Proxy Flags: 21.0% Items"]
+        O3["Cancellations: 0.6% Placed Orders"]
     end
 
-    subgraph Decision Layer [Experimentation & Strategy]
-        E1["Statistical Calculator (Sample Size, Z-Test, Welch T-Test, SRM)"]
-        E2["RICE Prioritization Engine (Ranked Now/Next/Later Backlog)"]
-        E3["Product Requirement Documents (PRDs) & Governance SOPs"]
-    end
-
-    subgraph Presentation [Streamlit Application]
-        UI["7-Page Streamlit Dashboard (app.py)"]
-    end
-
-    D1 --> P1
-    D2 --> P1
-    D3 --> P3
-    D4 --> P3
-    P1 --> P2 --> P3 --> P4
-
-    P4 --> A1
-    P4 --> A2
-    P4 --> A3
-
-    A1 --> E1
-    A2 --> E2
-    A3 --> E2
-
-    A1 & A2 & A3 & E1 & E2 & E3 --> UI
+    Storefront -->|Compounding Conversion Loss| RevenueLeakage["Gross Margin & Conversion Degradation"]
+    Inbound -->|Carrying Cost & Lost Sales| RevenueLeakage
+    Outbound -->|Reverse Logistics Friction| RevenueLeakage
 ```
 
 ---
 
-## 5. Technology Stack
+## 3. Product Architecture
 
-- **Runtime & Core Language**: Python 3.13
-- **Data Manipulation & Analysis**: Pandas, NumPy
-- **Scientific Computing & Statistics**: SciPy 1.15.3, Statsmodels 0.14.4
-- **Database & Object-Relational Mapping**: SQLite 3, SQLAlchemy 2.0
-- **Interactive Presentation**: Streamlit 1.45.1, Plotly Express & Graph Objects 5.24.1
-- **Testing & Verification**: Pytest 8.3.4, Streamlit AppTest harness
-- **Environment & Utilities**: python-dotenv, tabulate
+```
++---------------------------------------------------------------------------------------+
+|                                    PRESENTATION LAYER                                 |
+|                       Streamlit 1.45 Multi-Page Application                           |
+|  Page 1: Executive Overview            |  Page 5: A/B Experimentation Engine         |
+|  Page 2: Storefront Intelligence       |  Page 6: Product Roadmap & RICE Prioritization|
+|  Page 3: Inbound Intelligence          |  Page 7: Strategic Insights & PRD Suite     |
+|  Page 4: Outbound Intelligence         |                                              |
++---------------------------------------------------------------------------------------+
+                                           ^
+                                           |  Consumes
++---------------------------------------------------------------------------------------+
+|                               DECISION INTELLIGENCE LAYER                             |
+|  Storefront Analytics    | Inbound Analytics       | Outbound Analytics               |
+|  - Conversion Funnel     | - Catalog Completeness  | - Fulfillment Stages             |
+|  - Search Performance    | - Inventory Availability| - Delivery SLA Compliance        |
+|  - Product Velocity      | - Days of Cover (DoC)   | - Order Cancellations            |
+|  - Customer Cohorts/RFM  | - Automated Reorder     | - Return Root-Cause Attribution  |
+|                          | - Pricing & Markdowns   | - Financial Waterfall Exposure   |
+|  Experimentation Engine  | RICE Scoring Engine     | Decision Governance              |
+|  - Power & Sample Sizing | - Reach, Impact,        | - Guardrail Thresholds           |
+|  - Z-Tests & t-Tests     |   Confidence, Effort    | - SRM Detection (Chi-Square)     |
++---------------------------------------------------------------------------------------+
+                                           ^
+                                           |  Queries
++---------------------------------------------------------------------------------------+
+|                             DATA LAYER (SQLite / SQLAlchemy)                          |
+|  Dimension Tables        | Fact Tables             | Telemetry & Operations           |
+|  - dim_customers         | - fct_orders            | - fct_events_clickstream         |
+|  - dim_products          | - fct_order_items       | - fct_search_queries             |
+|  - dim_sellers           | - fct_order_payments    | - fct_inventory_snapshots        |
+|  - dim_geography         | - fct_order_reviews     | - fct_promotions                 |
++---------------------------------------------------------------------------------------+
+                                           ^
+                                           |  Loads & Cleans
++---------------------------------------------------------------------------------------+
+|                              DATA PIPELINE & INGESTION                                |
+|  - Raw Ingestion & Multi-Encoding Fallback (UTF-8, Latin-1, CP1252)                   |
+|  - Data Cleaning & Quarantine Pipeline (Chronological Timestamps & Range Gates)       |
+|  - Synthetic Behavioral Event Generator (Fixed Seed: 42, Source Tagging)              |
+|  - Star-Schema Relational Loader with Deterministic Mock Generation                   |
++---------------------------------------------------------------------------------------+
+```
 
 ---
 
-## 6. Data Sources & Provenance
+## 4. Comprehensive Documentation Index
 
-ThreadIQ maintains strict data provenance labels across all records and calculations:
+The ThreadIQ repository provides a 33-document enterprise product and engineering suite organized across 8 functional directories:
 
-| Source Name | Type | Origin | Licence | Scope |
-| :--- | :---: | :--- | :--- | :--- |
-| **Brazilian E-Commerce Dataset** | `[OBSERVED]` | Olist / Kaggle | CC BY-NC-SA 4.0 | Order lifecycles, delivery timestamps, customer states, payment transactions. |
-| **Fashion Product Images Dataset** | `[OBSERVED]` | Param Aggarwal / Kaggle | CC0: Public Domain | Apparel catalog hierarchy, colors, article types, product display names. |
-| **Behavioral Clickstream Stream** | `[SYNTHETIC]` | ThreadIQ Synthetic Engine | Proprietary Simulated | Monotonically sequenced 6-stage user sessions, search queries, cart additions. |
-| **Daily Inventory Snapshots** | `[SYNTHETIC]` | ThreadIQ Synthetic Engine | Proprietary Simulated | Daily warehouse stock, reservations, trailing velocity, demand archetypes. |
-| **Promotional Schedules** | `[SYNTHETIC]` | ThreadIQ Synthetic Engine | Proprietary Simulated | Campaign schedules, discount depths, promotion types. |
-
-> **Note on Simulated Data**: Public e-commerce datasets do not include raw clickstream logs or daily warehouse inventory snapshots. ThreadIQ generates these using a reproducible stochastic simulation engine (`src/threadiq/data/synthetic.py`). All synthetic tables carry explicit `source_type = 'synthetic'` attributes to maintain full audit transparency.
+| Directory | Document | Scope & Purpose |
+| :--- | :--- | :--- |
+| `docs/product/` | [Product Strategy](docs/product/product_strategy.md) | Vision, 4 personas, 3 user journeys, opportunity areas, goals/non-goals. |
+| | [RICE Prioritization](docs/product/rice_prioritisation.md) | RICE scoring methodology, scoring assumptions, Now/Next/Later tiers. |
+| | [Product Insights](docs/product/product_insights.md) | Comprehensive quantitative findings across Storefront, Inbound, and Outbound. |
+| `docs/prd/` | [PRD 01: Fit & Sizing Intelligence](docs/prd/prd_01_fit_and_sizing_intelligence.md) | 15-section PRD for AI size recommendation widget targeting return reduction. |
+| | [PRD 02: Express Checkout & Wallets](docs/prd/prd_02_express_checkout_and_wallets.md) | 15-section PRD for 1-click tokenized checkout targeting payment drop-off. |
+| | [PRD 03: Semantic Search & Synonyms](docs/prd/prd_03_semantic_search_expansion.md) | 15-section PRD for fuzzy matching and synonyms targeting zero-result queries. |
+| `docs/analytics/` | [Metrics Dictionary](docs/analytics/product_metrics_dictionary.md) | 21 enterprise metrics: formula, numerator/denominator, provenance, limits. |
+| | [Storefront Analytics](docs/analytics/storefront_analytics.md) | Funnel drops, search friction, merchandising velocity, RFM cohort decay. |
+| | [Inbound Analytics](docs/analytics/inbound_analytics.md) | Catalog attributes, stockout risks, Days of Cover, replenishment heuristic. |
+| | [Outbound Analytics](docs/analytics/outbound_analytics.md) | Fulfillment stages, carrier SLA compliance, delivery delays, return reasons. |
+| `docs/experimentation/` | [Experimentation Methodology](docs/experimentation/experimentation_methodology.md) | Hypothesis testing, sample sizing, power analysis, SRM guardrails. |
+| | [Simulated Experiment Trials](docs/experimentation/experiment_simulations.md) | Simulated A/B cohorts for `EXP-01`, `EXP-02`, and `EXP-03`. |
+| | [Experiment Results Summary](docs/experimentation/experiment_results.md) | Statistical test results, p-values, relative lifts, and rollout decisions. |
+| `docs/architecture/` | [System Architecture](docs/architecture/system_architecture.md) | End-to-end technical system diagram, modular layers, data flows. |
+| | [Database Schema](docs/architecture/database_schema.md) | Complete star-schema schema, primary/foreign keys, indices, and constraints. |
+| | [Data Pipeline Specification](docs/architecture/data_pipeline.md) | Ingestion stages, transformation rules, and idempotency guarantees. |
+| `docs/data/` | [Data Dictionary](docs/data/data_dictionary.md) | Detailed schema metadata, column descriptions, and nullability contracts. |
+| | [Dataset Inventory](docs/data/dataset_inventory.md) | Manifest of raw public files (Olist, Fashion Images) and row counts. |
+| | [Data Quality Report](docs/data/data_quality_report.md) | Automated validation rules, missingness thresholds, and quarantine metrics. |
+| | [Synthetic Data Methodology](docs/data/synthetic_data_methodology.md) | Generation heuristics, random seeds, and behavioral distributions. |
+| | [Assumptions & Limitations](docs/data/assumptions_and_limitations.md) | Boundary conditions, observational data limits, and research assumptions. |
+| `docs/operations/` | [Product Operations SOP](docs/operations/product_sop.md) | Weekly cadence, alert escalation matrix, and cross-functional triage. |
+| | [Customer Feedback Framework](docs/operations/customer_feedback_framework.md) | Review sentiment classification, CSAT/NPS feedback loops, voice of customer. |
+| | [Release Checklist](docs/operations/release_checklist.md) | Pre-flight verification, staging smoke tests, canary gates, rollback plan. |
+| | [QA Handover Document](docs/operations/qa_handover_checklist.md) | Acceptance criteria verification, regression test scenarios, sign-offs. |
+| | [Product Decision Record Log](docs/operations/product_decision_log.md) | Architectural and strategic PDR entries (PDR-01 through PDR-06). |
+| | [Risk Management Tracker](docs/operations/risk_and_dependency_tracker.md) | Technical and operational risk matrix with active mitigation controls. |
+| `docs/quality/` | [Requirements Audit](docs/quality/final_requirements_audit.md) | Comprehensive audit validating all product and engineering deliverables. |
+| | [Final Project Audit](docs/quality/final_project_audit.md) | Complete audit report on code quality, architecture, and feature delivery. |
+| | [Metric Provenance Guide](docs/quality/metric_provenance.md) | Granular lineage classification (Observed, Reconciled, Synthetic Proxy). |
+| | [Dashboard Integration Audit](docs/quality/dashboard_integration_audit.md) | Verification of all 7 Streamlit pages against database tables. |
+| | [Testing Report](docs/quality/testing_report.md) | Pytest execution results, coverage breakdown, and verification logs. |
 
 ---
 
-## 7. Key Analytical Findings & Product Insights
+## 5. RICE Opportunity Prioritization
 
- > **Interpretation note:** The figures below describe the repository's current demo database and generated records. They are implementation examples, not representative fashion-industry benchmarks or evidence about Myntra. Clickstream, inventory, promotion and return-reason outputs are synthetic; Olist transaction fields are observed public data. Check each metric's provenance and denominator before using it in a product decision.
+> **Interpretation note:** The figures below describe the repository's current demo database and generated records. They are implementation examples, not representative fashion-industry benchmarks or production baseline metrics.
 
-From the implemented analytics running against the populated demo database:
+All product candidate features are prioritized using the RICE framework ($\text{RICE} = \frac{R \times I \times C}{E}$). Scores are grounded in verified database analytics:
 
-1. **Cart & Checkout Drop-off**: 93.25% of shopping sessions with an item added to cart fail to convert, with an 89.02% drop-off between checkout initiation and payment completion.
-2. **Search Vocabulary Mismatch**: The generated demo database contains a synthetic search-query mix with zero-result queries. Its observed rate is a property of the generator configuration and should not be generalized to a real storefront.
-3. **Inventory Days of Cover Skew**: Hero SKU 1101 operates at 4.2 Days of Cover, requiring an urgent reorder of 340 units, while tail listings exceed 60 Days of Cover.
-4. **Logistics Bottleneck in Carrier Transit**: Carrier transit accounts for 75.15% of total order fulfillment lead time (171.2 hours vs. 56.7 hours for merchant dispatch), leading to an On-Time Delivery Rate of 69.70%.
-5. **Reverse Logistics Proxy**: Synthetic return-reason labels allow the dashboard to demonstrate return decomposition. They do not establish actual apparel return rates, size-fit causality or category return benchmarks.
+| Rank | ID | Product Area | Initiative Title | Reach ($R$) | Impact ($I$) | Confidence ($C$) | Effort ($E$) | RICE Score | Strategic Priority |
+| :---: | :---: | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **1** | `OPT-01` | Storefront | **Fit & Sizing Intelligence Engine** | 120,000 | 3.0 (High) | 80% | 3 | **96,000** | **Now (P0)** |
+| **2** | `OPT-02` | Storefront | **1-Click Express Checkout & Digital Wallets** | 85,000 | 3.0 (High) | 90% | 3 | **76,500** | **Now (P0)** |
+| **3** | `OPT-03` | Storefront | **Semantic Search & Zero-Result Synonyms** | 45,000 | 2.0 (Med) | 80% | 2 | **36,000** | **Now (P0)** |
+| **4** | `OPT-04` | Inbound | **Automated Replenishment & Stockout Alerts** | 35,000 | 2.0 (Med) | 70% | 2 | **24,500** | **Next (P1)** |
+| **5** | `OPT-05` | Outbound | **Carrier SLA & Transit Bottleneck Optimizer** | 65,000 | 2.0 (Med) | 70% | 4 | **22,750** | **Next (P1)** |
+| **6** | `OPT-06` | Inbound | **Merchant Catalog Quality Scoring Tool** | 28,000 | 2.0 (Med) | 80% | 2 | **22,400** | **Next (P1)** |
+| **7** | `OPT-07` | Inbound | **Margin-Protection Dynamic Markdown Engine** | 40,000 | 2.0 (Med) | 70% | 3 | **18,667** | **Next (P1)** |
+| **8** | `OPT-08` | Storefront | **Repeat Purchase RFM Triggered Email Nudges** | 50,000 | 1.0 (Low) | 80% | 3 | **13,333** | **Later (P2)** |
+| **9** | `OPT-09` | Outbound | **Self-Service Returns & Automated Exchange Portal** | 30,000 | 2.0 (Med) | 60% | 3 | **12,000** | **Later (P2)** |
+| **10** | `OPT-10` | Storefront | **3D Virtual Try-On Augmented Reality Viewer** | 15,000 | 3.0 (High) | 40% | 5 | **3,600** | **Later (P2)** |
+
+See [docs/product/rice_prioritisation.md](docs/product/rice_prioritisation.md) for full scoring rationales, confidence bounds, and dependency mappings.
 
 ---
 
-## 8. Product Management Framework
+## 6. Product Requirement Documents (PRDs)
 
-ThreadIQ bridges quantitative analysis with product execution:
+ThreadIQ provides comprehensive, production-ready PRDs for the top 3 highest-leverage prioritized initiatives:
 
-1. **RICE Backlog Prioritization**: All candidate initiatives are scored using explicit rubrics for Reach ($R$), Impact ($I$), Confidence ($C$), and Effort ($E$). Top-ranked initiatives:
-   - `OPT-01`: **Digital Fit & Sizing Intelligence Engine** (RICE: 27,000 — Tier: **NOW**)
-   - `OPT-02`: **1-Click Express Checkout & Digital Wallets** (RICE: 25,500 — Tier: **NOW**)
-   - `OPT-03`: **Semantic Search & Dynamic Synonym Expansion** (RICE: 16,000 — Tier: **NOW**)
-   - `OPT-04`: **Dynamic Days of Cover Replenishment Alerts** (RICE: 14,400 — Tier: **NOW**)
-2. **Statistical Experimentation (A/B Testing)**: Evaluates pre-registered hypotheses with power sizing, two-proportion z-tests, Welch's t-tests, and Sample Ratio Mismatch (SRM) checks.
-3. **Enterprise Product Requirement Documents (PRDs)**: 15-section specifications covering overview, problem statement, user personas, pain points, goals/non-goals, solution, user stories, functional/non-functional requirements, user journey, acceptance criteria, success metrics, dependencies, risks, and rollout plan.
-4. **Product Operations & Governance**: Defect triage SOP (P0–P3), customer feedback taxonomy, release checklists, QA handover matrices, Product Decision Records (PDRs), and active risk trackers.
+| PRD Document | Product Initiative | Target Metric | Primary Persona | Key Functional Capabilities |
+| :--- | :--- | :--- | :--- | :--- |
+| [PRD 01: Fit & Sizing](docs/prd/prd_01_fit_and_sizing_intelligence.md) | Fit & Sizing Intelligence Engine | $-30\%$ Apparel Return Rate | Maya Lin (Shopper) | Body profile quiz, size comparison matrix, fit feedback loop, garment measurements modal. |
+| [PRD 02: Express Checkout](docs/prd/prd_02_express_checkout_and_wallets.md) | 1-Click Express Checkout & Wallets | $+35\%$ Checkout Completion | Maya Lin (Shopper) | Tokenized Apple Pay/Google Pay/PIX, default shipping selector, guest 1-click payment sheet. |
+| [PRD 03: Semantic Search](docs/prd/prd_03_semantic_search_expansion.md) | Semantic Search & Synonyms | $-50\%$ Zero-Result Search Rate | Maya Lin (Shopper) | Trigram fuzzy matching, fashion synonym taxonomy, out-of-catalog fallback recommendations. |
+
+---
+
+## 7. Statistical Experimentation Framework
+
+ThreadIQ implements a rigorous statistical experimentation platform (`src/threadiq/experimentation/`):
+* **Hypothesis Testing:** Two-Proportion $Z$-Test for binary conversion events; Welch's $t$-Test for continuous revenue/time distributions.
+* **Sample Size & Power:** Fixed-sample size sizing at $\alpha = 0.05$ (95% confidence) and statistical power $1 - \beta = 0.80$.
+* **Integrity Guardrails:** Automated Pearson Chi-Square Sample Ratio Mismatch (SRM) checks ($\alpha = 0.001$).
+* **Decision Rules:** Clear stopping criteria and multi-metric guardrail gates.
+
+### Simulated A/B Trial Results Audit
+
+| Experiment ID | Tested Product Initiative | Evaluated Metric | Baseline | Treatment | Relative Lift | P-Value | SRM Status | Decision |
+| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| **`EXP-01`** | Fit & Sizing Intelligence Widget | Apparel Item Return Rate | $24.33\%$ | $15.13\%$ | **$-37.81\%$** | $< 10^{-6}$ | PASS ($p=1.0$) | **SHIP (100% Rollout)** |
+| **`EXP-02`** | 1-Click Express Checkout & Wallets | Checkout Completion Rate | $9.75\%$ | $17.10\%$ | **$+75.38\%$** | $< 10^{-6}$ | PASS ($p=1.0$) | **SHIP (100% Rollout)** |
+| **`EXP-03`** | Semantic Search & Synonym Expansion | Search Click-Through Rate | $15.00\%$ | $31.08\%$ | **$+107.22\%$** | $< 10^{-6}$ | PASS ($p=1.0$) | **SHIP (100% Rollout)** |
+
+> [!WARNING]
+> **Simulation Notice:**
+> Experimental results are simulated cohorts generated by `src/threadiq/experimentation/simulation.py` carrying the tag `source_type = 'simulated_experiment'`. They demonstrate the end-to-end mathematical methodology, confidence intervals, and decision gates, and do not represent live production causal proof.
+
+See [docs/experimentation/experimentation_methodology.md](docs/experimentation/experimentation_methodology.md) and [docs/experimentation/experiment_results.md](docs/experimentation/experiment_results.md).
+
+---
+
+## 8. Data Lineage, Provenance & Boundaries
+
+ThreadIQ maintains rigorous data provenance standards across all models:
+
+| Data Entity | Source Provenance | Underlying Dataset | Provenance Classification |
+| :--- | :--- | :--- | :--- |
+| Customers, Orders, Payments, Reviews | Observed Public | Olist Brazilian E-Commerce | **Observed Transactional Data** |
+| Product Catalog, Categories, Usage | Observed Public | Fashion Product Images (Kaggle) | **Reconciled Catalog Data** |
+| Clickstream Events (`fct_events`) | Generated | Synthetic Stochastic Simulation | **Synthetic Telemetry** |
+| Search Queries (`fct_search_queries`) | Generated | Synthetic Catalog Token Mapping | **Synthetic Telemetry** |
+| Inventory Snapshots (`fct_inventory_snapshots`) | Generated | Velocity-Depleted Stock Simulation | **Synthetic Operations** |
+| Return Reason Codes (`fct_order_items`) | Generated | Low-Review Proxy Assignment | **Synthetic Proxy Assignment** |
+| A/B Cohort Experiments (`EXP-01` to `03`) | Generated | Monte Carlo Power Simulator | **Simulated Decision Support** |
+
+> [!NOTE]
+> **Independent Portfolio Disclaimer:**
+> ThreadIQ is an independent educational and portfolio project developed by **PrinceNsut27**. It is not affiliated with Myntra and does not use Myntra's internal datasets, proprietary algorithms, or operational infrastructure. All public datasets are utilized under their respective open-access licenses.
 
 ---
 
@@ -206,13 +271,13 @@ threadiq/
 │       └── dashboard/                        # Presentation & visualization layer
 │           ├── theme.py                      # Custom CSS, Plotly templates, metric cards
 │           └── pages/                        # 7 Presentation modules
-├── tests/                                    # 54 Automated pytest test cases
+├── tests/                                    # 55 Automated pytest test cases
 │   ├── test_analytics.py                     # Analytics modules & edge cases (14 tests)
 │   ├── test_cleaning.py                      # Quarantine & cleaning tests (3 tests)
 │   ├── test_dashboard.py                     # Dashboard imports, theme & AppTest (5 tests)
 │   ├── test_experimentation.py               # Power, z-tests, t-tests, RICE (12 tests)
 │   ├── test_ingestion.py                     # Multi-encoding CSV reading (5 tests)
-│   ├── test_loaders_and_pipeline.py          # Database loads & migrations (2 tests)
+│   ├── test_loaders_and_pipeline.py          # Database loads & migrations (3 tests)
 │   ├── test_synthetic_data.py                # Behavioral simulation checks (7 tests)
 │   └── test_validation.py                    # Quality gates & referential integrity (6 tests)
 ├── app.py                                    # Main Streamlit web application entrypoint
@@ -223,13 +288,13 @@ threadiq/
 
 ---
 
-## 10. Installation and Setup
+## 10. Installation, Setup & Local Execution
 
-> **Dataset setup:** The `--mock-if-missing` option creates a small demo dataset for local exploration. For analysis using the public source datasets, download them using `python scripts/acquire_datasets.py` and follow the expected folder/file layout before running the pipeline without mock mode.
+> **Dataset setup:** The `--mock-if-missing` option creates a small demo dataset for local exploration. For analysis using the full public source datasets, download them using `python scripts/acquire_datasets.py` and follow the expected folder/file layout before running the pipeline without mock mode.
 
 ### Prerequisites
-- Python 3.11, 3.12, or 3.13
-- Git
+* Python 3.11, 3.12, or 3.13
+* Git
 
 ### 1. Clone the Repository
 ```bash
@@ -237,15 +302,15 @@ git clone https://github.com/PrinceNsut27/ThreadIQ.git
 cd ThreadIQ
 ```
 
-### 2. Set Up Virtual Environment
+### 2. Configure Virtual Environment
 ```bash
 # Windows (PowerShell):
-python -m venv venv
-venv\Scripts\Activate.ps1
+python -m venv .venv
+.venv\Scripts\Activate.ps1
 
 # macOS / Linux:
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
 ### 3. Install Dependencies
@@ -254,70 +319,85 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 4. Configure Environment Variables
+### 4. Initialize Database & Run Ingestion Pipeline
 ```bash
-# Copy the example environment template
-cp .env.example .env
-```
-*(Default settings connect automatically to `sqlite:///data/threadiq.db` without external credentials).*
-
-### 5. Initialize Database & Run Data Pipeline
-Populate the SQLite relational database with seed tables, catalog metadata, and synthetic clickstream/inventory snapshots:
-```bash
+# Build the SQLite database with mock data generation enabled:
 python scripts/run_pipeline.py --mock-if-missing --recreate-db
 ```
 
----
-
-## 11. Run the Dashboard
-
-Launch the interactive Streamlit application:
+### 5. Launch the Streamlit Dashboard
 ```bash
 streamlit run app.py
 ```
-Open your browser to `http://localhost:8501`.
 
-### Dashboard Navigation:
-- **Executive Overview**: High-level GMV, orders, unique customers, OTD% SLA, and fulfillment status distribution.
-- **Storefront Intelligence**: Full-funnel progression, cart/checkout abandonment, popular search queries, and RFM customer segmentation.
-- **Inbound Intelligence**: Catalog completeness scoring (97.2%), stockout frequency, Days of Cover, urgent replenishment POs, and pricing quartiles.
-- **Outbound Intelligence**: Delivery SLA compliance, regional state transit performance, fashion return reasons (`SIZE_FIT` = 38.5%), and merchant vs. carrier bottleneck waterfall.
-- **A/B Experimentation**: Statistical trial metrics, interactive sample size calculator, and custom two-proportion hypothesis tester.
-- **Product Roadmap & RICE**: Ranked backlog with RICE scores, Now/Next/Later filters, Gantt timeline, and risk log.
-- **Strategic Insights & PRDs**: 15 evidence-backed product opportunities with verified metrics and links to PRDs.
+#### 7 Interactive Dashboard Pages:
+1. **Executive Overview**: High-level platform KPIs, revenue trends, top-selling categories, and operational health.
+2. **Storefront Intelligence**: Conversion funnel stages, cart abandonment analysis, search discovery friction, and customer cohorts.
+3. **Inbound Intelligence**: Merchant catalog completeness, SKU stockout risk, Days of Cover (DoC), and automated replenishment.
+4. **Outbound Intelligence**: Fulfillment lifecycle stages, carrier on-time delivery (OTD%), late delivery geography, and return reasons.
+5. **A/B Experimentation Engine**: Statistical power calculator, hypothesis evaluation, confidence intervals, and Sample Ratio Mismatch checks.
+6. **Product Roadmap & RICE**: Dynamic RICE prioritization model with interactive sliders, priority tier filters, and trade-off graphs.
+7. **Strategic Insights & PRDs**: Complete product specifications, user journeys, functional acceptance criteria, and executive decisions.
 
 ---
 
-## 12. Testing
+## 11. Automated Testing & Verification
 
-Run the full automated test suite using pytest:
+ThreadIQ maintains an extensive test suite verifying mathematical correctness, data cleaning rules, database integrity, and UI stability:
+
 ```bash
-pytest tests/ -v
+# Run the complete test suite with verbose reporting:
+python -m pytest tests/ -v
 ```
 
-### Test Coverage Summary:
-- The repository testing report documents **54 test cases across 8 test suites**. Re-run `pytest tests/ -v` in your environment to verify the current checkout; the README does not treat a historical report as a live CI result.
-- Includes unit tests for all 14 analytics classes, ingestion encoding fallbacks, data cleaning quarantine rules, database relational integrity, statistical power calculations, z-tests, Welch's t-tests, RICE scoring, and native headless Streamlit `AppTest` execution across all 7 dashboard pages with 0 unhandled exceptions.
+### Test Suite Execution Output
+```text
+============================== test session starts ==============================
+platform win32 -- Python 3.13.5, pytest-8.3.4, pluggy-1.5.0
+rootdir: C:\Users\Prince\Desktop\threadiq
+plugins: anyio-4.7.0
+collected 55 items
+
+tests\test_analytics.py ..............                                   [ 25%]
+tests\test_cleaning.py ...                                               [ 30%]
+tests\test_dashboard.py .....                                            [ 40%]
+tests\test_experimentation.py ............                               [ 61%]
+tests\test_ingestion.py .....                                            [ 70%]
+tests\test_loaders_and_pipeline.py ...                                   [ 76%]
+tests\test_synthetic_data.py .......                                     [ 89%]
+tests\test_validation.py ......                                          [100%]
+
+============================== 55 passed in 35.75s ==============================
+```
+
+* **Python Compilation:** `python -m compileall src/ tests/ app.py` (0 syntax errors).
+* **Headless AppTest:** Validates that all 7 Streamlit pages compile and render cleanly via `streamlit.testing.v1.AppTest` with zero unhandled exceptions.
+* **Test Coverage Summary:** Unit tests for all 14 analytics classes, ingestion encoding fallbacks, data cleaning quarantine rules, database relational integrity, statistical power calculations, z-tests, Welch's t-tests, RICE scoring, and native headless Streamlit `AppTest` execution across all 7 dashboard pages.
 
 ---
 
-## 13. Limitations
+## 12. Limitations & Assumptions
 
-1. **Synthetic Behavioral Data**: Public e-commerce datasets do not include raw digital clickstream sessions or daily warehouse inventory snapshots. ThreadIQ generates these using a stochastic simulation engine (`src/threadiq/data/synthetic.py`). All synthetic tables carry explicit `source_type = 'synthetic'` tags.
+1. **Synthetic Behavioral Telemetry**: Public e-commerce datasets do not include raw digital clickstream sessions or daily warehouse inventory snapshots. ThreadIQ generates these using a stochastic simulation engine (`src/threadiq/data/synthetic.py`). All synthetic tables carry explicit `data_source = 'synthetic'` tags.
 2. **Local SQLite Concurrency**: SQLite is utilized as the default embedded relational database for portability. In enterprise production deployments with high concurrent write volume, the SQLAlchemy abstraction layer allows configuring PostgreSQL by updating `DATABASE_URL` in `.env`.
 3. **Simulated A/B Experiments**: Trial results in Page 5 are simulated cohorts designed to demonstrate statistical power analysis, confidence intervals, and Sample Ratio Mismatch checks. They represent decision-support methodology rather than live production causal proof.
+4. **Synthetic Return Reason Proxies**: While order status and cancellation flags are observed directly from Olist, granular apparel return reason codes (e.g., size too small, fabric dissatisfaction) are generated proxy assignments linked to low-rating customer reviews (`review_score <= 2`).
 
 ---
 
-## 14. Future Improvements
+## 13. Future Roadmap
 
-- **3D Virtual Try-On Integration**: Computer-vision powered augmented reality sizing widget for complex categories (`OPT-10`).
-- **Distributed Streaming Ingestion**: Integration with Apache Kafka or AWS Kinesis for real-time sub-second clickstream processing.
-- **Dynamic Multi-Carrier API Integration**: Automated carrier switching based on live destination route congestion webhooks (`OPT-05`).
-- **LLM Review Mining**: Automated natural language clustering of customer review comments (`fct_order_reviews`) into actionable garment construction defect alerts.
+- **3D Virtual Try-On Integration**: Computer-vision powered augmented reality sizing widget for complex garment categories (`OPT-10`).
+- **Distributed Streaming Ingestion**: Integration with Apache Kafka or AWS Kinesis for real-time sub-second clickstream event processing.
+- **Dynamic Multi-Carrier API Integration**: Automated carrier routing switching based on live destination route congestion webhooks (`OPT-05`).
+- **LLM Customer Voice Mining**: Automated natural language clustering of customer review comments (`fct_order_reviews`) into actionable garment construction defect alerts.
 
 ---
 
-## 15. Project Information
+## 14. Project Information & Author Contact
 
-**ThreadIQ** is an independent educational and portfolio project developed by **PrinceNsut27**. It is not affiliated with Myntra and does not use Myntra's internal datasets or systems. Public dataset use is subject to each dataset publisher's licence and terms. See the data provenance section before redistributing source data.
+* **Lead Architect & Product Manager:** Prince Kumar
+* **GitHub:** [@PrinceNsut27](https://github.com/PrinceNsut27)
+* **Project Repository:** [https://github.com/PrinceNsut27/ThreadIQ](https://github.com/PrinceNsut27/ThreadIQ)
+
+*ThreadIQ is an independent educational and portfolio project developed by Prince Kumar. It is not affiliated with Myntra and does not use Myntra's internal datasets or proprietary systems.*
